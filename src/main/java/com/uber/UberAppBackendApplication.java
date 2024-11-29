@@ -8,6 +8,7 @@ public class UberAppBackendApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(UberAppBackendApplication.class, args);
+		System.out.println("--------------------Hello Uber App-------------------");
 	}
 
 }
