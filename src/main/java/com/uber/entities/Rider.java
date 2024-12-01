@@ -1,9 +1,13 @@
 package com.uber.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "rider")
+@Getter
+@Setter
 public class Rider {
 
     @Id

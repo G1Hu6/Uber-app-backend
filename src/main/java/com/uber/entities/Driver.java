@@ -2,10 +2,14 @@ package com.uber.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.locationtech.jts.geom.Point;
 
 @Entity
 @Table(name = "driver")
+@Getter
+@Setter
 public class Driver {
 
     @Id
