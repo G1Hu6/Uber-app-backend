@@ -25,6 +25,8 @@ public class Driver {
     @JsonProperty("available")
     private Double isAvailable;
 
+    private String vehicleId;
+
     @Column(columnDefinition = "Geometry(Point,4326)",name = "current_location")
     private Point currentLocation;
 }

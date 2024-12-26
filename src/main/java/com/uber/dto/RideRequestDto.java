@@ -22,9 +22,9 @@ public class RideRequestDto {
 
     private RiderDto rider;
 
-    private Point pickUpLocation;
+    private PointDto pickUpLocation;
 
-    private Point dropOffLocation;
+    private PointDto dropOffLocation;
 
     private LocalDateTime requestedTime;
 
