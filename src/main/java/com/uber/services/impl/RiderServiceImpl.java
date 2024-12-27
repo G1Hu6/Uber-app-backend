@@ -7,11 +7,13 @@ import com.uber.entities.RideRequest;
 import com.uber.entities.Rider;
 import com.uber.entities.User;
 import com.uber.entities.enums.RideRequestStatus;
+import com.uber.exceptions.ResourceNotFoundException;
 import com.uber.repositories.RideRequestRepository;
 import com.uber.repositories.RiderRepository;
 import com.uber.services.RiderService;
 import com.uber.strategies.DriverMatchingStrategy;
 import com.uber.strategies.RideFareCalculationStrategy;
+import com.uber.strategies.RideStrategyManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -26,9 +28,7 @@ public class RiderServiceImpl implements RiderService {
 
     private final ModelMapper modelMapper;
 
-    private final RideFareCalculationStrategy rideFareCalculationStrategy;
-
-    private final DriverMatchingStrategy driverMatchingStrategy;
+    private final RideStrategyManager rideStrategyManager;
 
     private final RideRequestRepository rideRequestRepository;
 
@@ -36,15 +36,17 @@ public class RiderServiceImpl implements RiderService {
 
     @Override
     public RideRequestDto requestRide(RideRequestDto rideRequestDto) {
+        Rider rider = getCurrentRider();
         RideRequest rideRequest = modelMapper.map(rideRequestDto, RideRequest.class);
         //log.info(rideRequest.toString());
         rideRequest.setRequestStatus(RideRequestStatus.PENDING);
-        Double fare = rideFareCalculationStrategy.calculateFare(rideRequest);
+        rideRequest.setRider(rider);
+        Double fare = rideStrategyManager.rideFareCalculationStrategy().calculateFare(rideRequest);
         rideRequest.setFare(fare);
 
         RideRequest savedRideRequest = rideRequestRepository.save(rideRequest);
 
-        driverMatchingStrategy.getMatchingDrivers(rideRequest);
+        rideStrategyManager.driverMatchingStrategy(rider.getRatting()).getMatchingDrivers(rideRequest);
         return modelMapper.map(savedRideRequest, RideRequestDto.class);
     }
 
@@ -72,5 +74,12 @@ public class RiderServiceImpl implements RiderService {
     public Rider createNewRider(User user) {
         Rider rider = Rider.builder().user(user).ratting(0.0).build();
         return riderRepository.save(rider);
+    }
+
+    @Override
+    public Rider getCurrentRider() {
+        // TODO : Implement Spring Security to get current Rider
+        return riderRepository.findById(1L).orElseThrow(() ->new ResourceNotFoundException(
+                "Rider Not found by Id : " + 1));
     }
 }

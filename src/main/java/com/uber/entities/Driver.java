@@ -22,8 +22,7 @@ public class Driver {
 
     private Double ratting;
 
-    @JsonProperty("available")
-    private Double isAvailable;
+    private Boolean available;
 
     private String vehicleId;
 

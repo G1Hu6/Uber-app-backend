@@ -14,6 +14,7 @@ import com.uber.services.RiderService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
@@ -37,6 +38,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional  // Used to avoid inconsistency
     public UserDto signUp(SignUpDto signUpDTO) {
         User user = userRepository.findByEmail(signUpDTO.getEmail()).orElse(null);
         if(user != null){
@@ -47,6 +49,7 @@ public class AuthServiceImpl implements AuthService {
         User savedUser = userRepository.save(mappedUser);
 
         // Onboard User to database create user related entities
+        // use @Transactional to avoid inconsistency of user and rider
         Rider rider = riderService.createNewRider(savedUser);
         // TODO add wallet related service here
 
