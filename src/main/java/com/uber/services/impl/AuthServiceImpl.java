@@ -11,10 +11,10 @@ import com.uber.repositories.RiderRepository;
 import com.uber.repositories.UserRepository;
 import com.uber.services.AuthService;
 import com.uber.services.RiderService;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 

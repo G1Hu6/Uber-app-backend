@@ -3,6 +3,7 @@ package com.uber.services.impl;
 import com.uber.dto.RideDto;
 import com.uber.dto.RideRequestDto;
 import com.uber.dto.RiderDto;
+import com.uber.entities.Driver;
 import com.uber.entities.RideRequest;
 import com.uber.entities.Rider;
 import com.uber.entities.User;
@@ -11,8 +12,6 @@ import com.uber.exceptions.ResourceNotFoundException;
 import com.uber.repositories.RideRequestRepository;
 import com.uber.repositories.RiderRepository;
 import com.uber.services.RiderService;
-import com.uber.strategies.DriverMatchingStrategy;
-import com.uber.strategies.RideFareCalculationStrategy;
 import com.uber.strategies.RideStrategyManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +45,9 @@ public class RiderServiceImpl implements RiderService {
 
         RideRequest savedRideRequest = rideRequestRepository.save(rideRequest);
 
-        rideStrategyManager.driverMatchingStrategy(rider.getRatting()).getMatchingDrivers(rideRequest);
+        List<Driver> drivers = rideStrategyManager.driverMatchingStrategy(rider.getRatting()).getMatchingDrivers(rideRequest);
+
+        // TODO Send Notifications to all Drivers about this request
         return modelMapper.map(savedRideRequest, RideRequestDto.class);
     }
 

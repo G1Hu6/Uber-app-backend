@@ -1,6 +1,5 @@
 package com.uber.services;
 
-import com.uber.dto.DriverDto;
 import com.uber.dto.RideDto;
 import com.uber.dto.RideRequestDto;
 import com.uber.dto.RiderDto;

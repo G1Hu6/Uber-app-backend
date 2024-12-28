@@ -1,7 +1,6 @@
 package com.uber.controllers;
 
 import com.uber.dto.RideRequestDto;
-import com.uber.services.RideService;
 import com.uber.services.RiderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

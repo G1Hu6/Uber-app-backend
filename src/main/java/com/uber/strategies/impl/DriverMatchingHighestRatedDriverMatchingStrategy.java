@@ -1,12 +1,10 @@
 package com.uber.strategies.impl;
 
-import com.uber.dto.RideRequestDto;
 import com.uber.entities.Driver;
 import com.uber.entities.RideRequest;
 import com.uber.repositories.DriverRepository;
 import com.uber.strategies.DriverMatchingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.AccessType;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

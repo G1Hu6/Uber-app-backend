@@ -1,14 +1,8 @@
 package com.uber.dto;
 
-import com.uber.entities.Rider;
 import com.uber.entities.enums.PaymentMethod;
 import com.uber.entities.enums.RideRequestStatus;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.locationtech.jts.geom.Point;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -16,6 +10,8 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class RideRequestDto {
 
     private Long id;
