@@ -1,6 +1,8 @@
 package com.uber.services;
 
-import org.springframework.stereotype.Service;
+import com.uber.entities.WalletTransaction;
 
 public interface WalletTransactionService {
+
+    void createNewWalletTransaction(WalletTransaction walletTransaction);
 }

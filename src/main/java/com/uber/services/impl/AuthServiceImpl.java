@@ -11,7 +11,9 @@ import com.uber.repositories.RiderRepository;
 import com.uber.repositories.UserRepository;
 import com.uber.services.AuthService;
 import com.uber.services.RiderService;
+import com.uber.services.WalletService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,18 +21,14 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private RiderService riderService;
-    @Autowired
-    private RiderRepository riderRepository;
+    private final ModelMapper modelMapper;
+    private final UserRepository userRepository;
+    private final RiderService riderService;
+    private final RiderRepository riderRepository;
+    private final WalletService walletService;
 
     @Override
     public String login(String email, String password) {
@@ -51,7 +49,9 @@ public class AuthServiceImpl implements AuthService {
         // Onboard User to database create user related entities
         // use @Transactional to avoid inconsistency of user and rider
         Rider rider = riderService.createNewRider(savedUser);
+
         // TODO add wallet related service here
+        walletService.createNewWallet(savedUser);
 
         return modelMapper.map(savedUser, UserDto.class);
     }

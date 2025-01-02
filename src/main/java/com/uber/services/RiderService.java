@@ -26,3 +26,8 @@ public interface RiderService {
 
     Rider getCurrentRider();
 }
+
+//10 ratting Count -> 4.0
+//new rating 4.6
+//updated ratting
+//new ratting 4.0+4.6/11 = 4.05
