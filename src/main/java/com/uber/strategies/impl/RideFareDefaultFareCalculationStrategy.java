@@ -5,7 +5,7 @@ import com.uber.services.DistanceService;
 import com.uber.strategies.RideFareCalculationStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
+ 
 @RequiredArgsConstructor
 @Service
 public class RideFareDefaultFareCalculationStrategy implements RideFareCalculationStrategy {

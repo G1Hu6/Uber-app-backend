@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RiderDto {
 
+    private Long id;
+
     private User user;
 
     private Double ratting;

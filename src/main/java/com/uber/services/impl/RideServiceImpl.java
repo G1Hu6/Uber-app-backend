@@ -1,9 +1,9 @@
 package com.uber.services.impl;
 
-import com.uber.dto.RideRequestDto;
 import com.uber.entities.Driver;
 import com.uber.entities.Ride;
 import com.uber.entities.RideRequest;
+import com.uber.entities.Rider;
 import com.uber.entities.enums.RideRequestStatus;
 import com.uber.entities.enums.RideStatus;
 import com.uber.exceptions.ResourceNotFoundException;
@@ -34,11 +34,6 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public void matchWithDrivers(RideRequestDto rideRequestDto) {
-
-    }
-
-    @Override
     public Ride createNewRide(RideRequest rideRequest, Driver driver) {
         rideRequest.setRequestStatus(RideRequestStatus.CONFIRMED);
         Ride ride = modelMapper.map(rideRequest, Ride.class);
@@ -58,13 +53,14 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public Page<Ride> getAllRidesOfRider(Long riderId, PageRequest pageRequest) {
-        return null;
+    public Page<Ride> getAllRidesOfRider(Rider rider, PageRequest pageRequest) {
+        rideRepository.findByRider(rider, pageRequest);
     }
 
     @Override
-    public Page<Ride> getAllRidesOfDriver(Long driverId, PageRequest pageRequest) {
-        return null;
+    public Page<Ride> getAllRidesOfDriver(Driver driver, PageRequest pageRequest) {
+
+        rideRepository.findByDriver(driver, pageRequest);
     }
 
     private String generateRandomOTP(){
