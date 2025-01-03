@@ -6,14 +6,12 @@ import com.uber.dto.RiderDto;
 import com.uber.entities.Driver;
 import com.uber.entities.Ride;
 import com.uber.entities.RideRequest;
+import com.uber.entities.Rider;
 import com.uber.entities.enums.RideRequestStatus;
 import com.uber.entities.enums.RideStatus;
 import com.uber.exceptions.ResourceNotFoundException;
 import com.uber.repositories.DriverRepository;
-import com.uber.services.DriverService;
-import com.uber.services.PaymentService;
-import com.uber.services.RideRequestService;
-import com.uber.services.RideService;
+import com.uber.services.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -32,6 +30,7 @@ public class DriverServiceImpl implements DriverService {
     private final ModelMapper modelMapper;
     private final DriverRepository driverRepository;
     private final PaymentService paymentService;
+    private final RattingService rattingService;
 
     @Override
     @Transactional
@@ -71,6 +70,7 @@ public class DriverServiceImpl implements DriverService {
         ride.setStartedAt(LocalDateTime.now());
         Ride savedRide = rideService.updateRideStatus(ride, RideStatus.ONGOING);
         paymentService.createNewPayment(savedRide);
+        rattingService.createNewRatting(ride);
         return modelMapper.map(savedRide, RideDto.class);
     }
 
@@ -114,7 +114,18 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public RiderDto rateRider(Long rideId, Integer ratting) {
-        return null;
+
+        Ride ride = rideService.getRideById(rideId);
+        Driver driver = getCurrentDriver();
+
+        if(!driver.equals(ride.getDriver())){
+            throw new RuntimeException("Driver is not the owner of ride");
+        }
+        if(!ride.getRideStatus().equals(RideStatus.ENDED)){
+            throw new RuntimeException("Ride status is not Ended hence cannot start ratting, status : " + ride.getRideStatus());
+        }
+        return rattingService.rateRider(ride,ratting);
+
     }
 
     @Override
@@ -144,6 +155,11 @@ public class DriverServiceImpl implements DriverService {
 
         toUpdateDriver.setAvailable(isAvailable);
         return driverRepository.save(toUpdateDriver);
+    }
+
+    @Override
+    public Driver createNewDriver(Driver driver) {
+        return driverRepository.save(driver);
     }
 
 

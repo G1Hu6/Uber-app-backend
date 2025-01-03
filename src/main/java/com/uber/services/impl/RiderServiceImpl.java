@@ -1,5 +1,6 @@
 package com.uber.services.impl;
 
+import com.uber.dto.DriverDto;
 import com.uber.dto.RideDto;
 import com.uber.dto.RideRequestDto;
 import com.uber.dto.RiderDto;
@@ -76,7 +77,7 @@ public class RiderServiceImpl implements RiderService {
     }
 
     @Override
-    public RiderDto rateDriver(Long rideId, Integer ratting) {
+    public DriverDto rateDriver(Long rideId, Integer ratting) {
         return null;
     }
 

@@ -3,13 +3,17 @@ package com.uber.services.impl;
 import com.uber.dto.DriverDto;
 import com.uber.dto.SignUpDto;
 import com.uber.dto.UserDto;
+import com.uber.entities.Driver;
 import com.uber.entities.Rider;
 import com.uber.entities.User;
 import com.uber.entities.enums.Role;
+import com.uber.exceptions.ResourceNotFoundException;
 import com.uber.exceptions.RuntimeConflictException;
+import com.uber.repositories.DriverRepository;
 import com.uber.repositories.RiderRepository;
 import com.uber.repositories.UserRepository;
 import com.uber.services.AuthService;
+import com.uber.services.DriverService;
 import com.uber.services.RiderService;
 import com.uber.services.WalletService;
 import jakarta.transaction.Transactional;
@@ -29,6 +33,7 @@ public class AuthServiceImpl implements AuthService {
     private final RiderService riderService;
     private final RiderRepository riderRepository;
     private final WalletService walletService;
+    private final DriverService driverService;
 
     @Override
     public String login(String email, String password) {
@@ -57,7 +62,23 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public DriverDto onboardDriver(Long userId) {
-        return null;
+    public DriverDto onboardDriver(Long userId, String vehicleId) {
+
+        User user = userRepository.findById(userId).orElseThrow(()-> new ResourceNotFoundException("User not found with id + " + userId));
+         if(user.getRoles().contains(Role.DRIVER)){
+             throw new RuntimeConflictException("User with user id " + userId + " is already a DRIVER");
+         }
+         Driver createDriver = Driver.builder()
+                  .user(user)
+                  .ratting(0.0)
+                  .vehicleId(vehicleId)
+                  .available(true)
+                  .build();
+
+         user.getRoles().add(Role.DRIVER);
+         userRepository.save(user);
+
+         Driver savedDriver = driverService.createNewDriver(createDriver);
+         return modelMapper.map(savedDriver, DriverDto.class);
     }
 }

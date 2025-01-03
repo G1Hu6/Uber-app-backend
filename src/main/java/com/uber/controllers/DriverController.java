@@ -1,9 +1,11 @@
 package com.uber.controllers;
 
-import com.uber.dto.RideDto;
-import com.uber.dto.RideStartDto;
+import com.uber.dto.*;
 import com.uber.services.DriverService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +27,33 @@ public class DriverController {
     }
 
     @PostMapping(path = "endRide/{rideId}")
-    public ResponseEntity<RideDto> startRide(@PathVariable Long rideId){
+    public ResponseEntity<RideDto> endRide(@PathVariable Long rideId){
         return ResponseEntity.ok(driverService.endRide(rideId));
+    }
+
+    @PostMapping(path = "/cancelRide/{rideId}")
+    public ResponseEntity<RideDto> cancelRide(@PathVariable Long rideId){
+        return ResponseEntity.ok(driverService.cancelRide(rideId));
+    }
+
+    @PostMapping(path = "/rateRider")
+    public ResponseEntity<RiderDto> rateDriver(@RequestBody RattingDto rattingDto){
+        return ResponseEntity.ok(driverService.rateRider(rattingDto.getRideId(), rattingDto.getRatting()));
+    }
+
+    @PostMapping(path = "rateRider/{rideId}/{ratting}")
+    public ResponseEntity<RiderDto> rateRider(@PathVariable Long rideId, @PathVariable Integer ratting){
+        return ResponseEntity.ok(driverService.rateRider(rideId, ratting));
+    }
+
+    @GetMapping(path = "/getMyProfile")
+    public ResponseEntity<DriverDto> getMyProfile(){
+        return ResponseEntity.ok(driverService.getMyProfile());
+    }
+
+    @GetMapping(path = "getMyRides")
+    public ResponseEntity<Page<RideDto>> getAllMyRides(@RequestParam(defaultValue = "0") Integer pageNumber,
+                                                       @RequestParam(defaultValue = "10", required = false) Integer pageSize){
+        return ResponseEntity.ok(driverService.getAllMyRids(PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "createdTime", "id"))));
     }
 }

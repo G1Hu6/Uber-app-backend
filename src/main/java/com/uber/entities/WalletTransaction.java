@@ -14,6 +14,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Builder
+@Table(
+        indexes = {
+                @Index(name = "idx_wallet_wallet_transaction", columnList = "wallet_id"),
+                @Index(name = "idx_wallet_ride", columnList = "ride_id"),
+        }
+)
 public class WalletTransaction {
 
     @Id
@@ -36,6 +42,6 @@ public class WalletTransaction {
     @ManyToOne
     private Wallet wallet;
 
-    @OneToOne
+    @ManyToOne
     private Ride ride;
 }

@@ -19,7 +19,4 @@ public class ApiError {
     private String message;
 
     private List<String> subErrors;
-
-    public ApiError(ApiError apiError) {
-    }
 }
