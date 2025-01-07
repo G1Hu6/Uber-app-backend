@@ -32,11 +32,6 @@ public class RiderController {
         return ResponseEntity.ok(riderService.rateDriver(rattingDto.getRideId(), rattingDto.getRatting()));
     }
 
-    @PostMapping(path = "rateDriver/{rideId}/{ratting}")
-    public ResponseEntity<DriverDto> rateDriver(@PathVariable Long rideId, @PathVariable Integer ratting){
-        return ResponseEntity.ok(riderService.rateDriver(rideId, ratting));
-    }
-
     @GetMapping(path = "/getMyProfile")
     public ResponseEntity<RiderDto> getMyProfile(){
         return ResponseEntity.ok(riderService.getMyProfile());
