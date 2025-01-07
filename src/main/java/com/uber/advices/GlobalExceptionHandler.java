@@ -2,8 +2,11 @@ package com.uber.advices;
 
 import com.uber.exceptions.ResourceNotFoundException;
 import com.uber.exceptions.RuntimeConflictException;
+import io.jsonwebtoken.JwtException;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -42,7 +45,7 @@ public class GlobalExceptionHandler {
         List<String> errors = exception.getBindingResult()
                 .getAllErrors()
                 .stream()
-                .map(objectError -> objectError.getDefaultMessage())
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .toList();
 
         ApiError apiError =  ApiError.builder()
@@ -51,6 +54,26 @@ public class GlobalExceptionHandler {
                 .subErrors(errors).build();
 
         return sendApiResponse(apiError);
+    }
+    
+    // Handle AuthenticationException
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ApiError> handleAuthenticationException(AuthenticationException exception){
+        ApiError apiError = ApiError.builder()
+                .httpStatus(HttpStatus.UNAUTHORIZED)
+                .message(exception.getMessage())
+                .build();
+        return new ResponseEntity<>(apiError,HttpStatus.UNAUTHORIZED);
+    }
+
+    //Handle JwtException
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<ApiError> handleJwtException(JwtException exception){
+        ApiError apiError = ApiError.builder()
+                .httpStatus(HttpStatus.UNAUTHORIZED)
+                .message(exception.getMessage())
+                .build();
+        return new ResponseEntity<>(apiError,HttpStatus.UNAUTHORIZED);
     }
 
     private ResponseEntity<ApiResponse<?>> sendApiResponse(ApiError apiError) {

@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,6 +23,7 @@ public class AuthController {
         return new ResponseEntity<>(authService.signUp(signUpDto), HttpStatus.CREATED);
     }
 
+    @Secured("ROLE_ADMIN")
     @PostMapping(path = "/onBoardNewDriver/{userId}")
     public ResponseEntity<DriverDto> onBoardNewDriver(@PathVariable Long userId, @RequestBody OnBoardDriverDto onBoardDriverDto ){
         return new ResponseEntity<>(authService.onboardDriver(userId, onBoardDriverDto.getVehicleId()), HttpStatus.CREATED);
