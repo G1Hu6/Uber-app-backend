@@ -1,10 +1,10 @@
 package com.uber.controllers;
 
-import com.uber.dto.DriverDto;
-import com.uber.dto.OnBoardDriverDto;
-import com.uber.dto.SignUpDto;
-import com.uber.dto.UserDto;
+import com.uber.dto.*;
 import com.uber.services.AuthService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,5 +25,16 @@ public class AuthController {
     @PostMapping(path = "/onBoardNewDriver/{userId}")
     public ResponseEntity<DriverDto> onBoardNewDriver(@PathVariable Long userId, @RequestBody OnBoardDriverDto onBoardDriverDto ){
         return new ResponseEntity<>(authService.onboardDriver(userId, onBoardDriverDto.getVehicleId()), HttpStatus.CREATED);
+    }
+
+    @PostMapping(path = "/login")
+    public ResponseEntity<LoginResponseDto> logIn(@RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request, HttpServletResponse response){
+        String[] tokens = authService.login(loginRequestDto.getEmail(),loginRequestDto.getPassword());
+
+        Cookie cookie = new Cookie("token", tokens[1]);
+        cookie.setHttpOnly(true);
+
+        response.addCookie(cookie);
+        return ResponseEntity.ok(new LoginResponseDto(tokens[0]));
     }
 }
